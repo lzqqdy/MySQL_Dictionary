@@ -10,7 +10,7 @@ $dbname = isset($_GET['name']) ? $dbname = $_GET['name'] : $dbname = null;
 $database = array();
 $password = 'root';//访问密码GET['pwd'] 传输
 $database['DB_HOST'] = '127.0.0.1';
-$database['DB_NAME'] = 'crmeb';//数据库名称
+$database['DB_NAME'] = 'fastadmin';//数据库名称
 $database['DB_USER'] = 'root';//用户名
 $database['DB_PWD'] = 'root';//密码
 $char_set = 'UTF8';//数据库编码
@@ -201,6 +201,7 @@ echo $html;
                 offset: '100px',
                 type: 2,
                 maxmin: true,
+                shadeClose: true,
                 content: url + '?name=' + dbname + '&table=' + tabname //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
             });
         })
@@ -210,12 +211,17 @@ echo $html;
             var tabname = $(this).data("tabname");
             layer.open({
                 title: name,
+                shadeClose: true,
                 area: ['95%', '95%'],
                 offset: '15px',
                 type: 2,
                 content: url + '?name=' + dbname + '&table=' + tabname + '&data=1'
             });
         })
+    });
+    $('body', document).on('keyup', function (e) {
+        console.log("按下esc");
+        layer.closeAll();
     });
 </script>
 
