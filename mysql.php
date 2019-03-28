@@ -2,7 +2,7 @@
 //访问方法
 // /mysql.php?pwd=root&name=数据库名为空则读取配置文件中的数据库名&table=表名为空所有表
 /**
- * pwd      密码
+ * pwd      访问密码
  * name     数据库名称
  * table    表名
  */
@@ -13,7 +13,7 @@ header("Content-type:text/html;charset=utf-8");
 $dbname = $_GET['name'] ?? null; //php>7.0,否则使用上面的
 // 配置数据库
 $database = [];
-$password = 'root';                 //访问密码GET['pwd'] 传输
+$password = 'root';                 //访问密码GET['pwd']
 $database['DB_HOST'] = '127.0.0.1'; //数据库地址
 $database['DB_NAME'] = 'fastadmin'; //数据库名称
 $database['DB_USER'] = 'root';      //用户名
@@ -21,19 +21,20 @@ $database['DB_PWD']  = 'root';      //密码
 $char_set = 'UTF8';                 //数据库编码
 //isset($dbname) ? $dbname : $dbname = $database['DB_NAME'];
 $dbname = $dbname ?? $database['DB_NAME']; //php>7.0
+$pwd = !empty($_GET['pwd']) ? $_GET['pwd'] : $_SESSION['pwd'];
+if ($password != $pwd)
+{
+    session_destroy();
+    exit('无权访问');
+}
+$_SESSION['pwd'] = $pwd;
 //连接数据库
 date_default_timezone_set('Asia/Shanghai');
 $mysql_conn = @mysqli_connect("{$database['DB_HOST']}", "{$database['DB_USER']}", "{$database['DB_PWD']}") or die("Mysql connect is error.");
 mysqli_select_db($mysql_conn, $dbname);
 $result = mysqli_query($mysql_conn, 'show tables');
 mysqli_query($mysql_conn, 'SET NAMES ' . $char_set);
-$pwd = !empty($_GET['pwd']) ? $_GET['pwd'] : $_SESSION['pwd'];
-if ($password != $pwd)
-{
-    $_SESSION['pwd'] = null;
-    exit('无权访问');
-}
-$_SESSION['pwd'] = $pwd;
+
 if (isset($_GET['table']))
 {
     $tables[]['TABLE_NAME'] = $_GET['table'];
@@ -168,18 +169,18 @@ if (isset($_GET['table']) && !isset($_GET['data']))
 }
 // 输出
 echo '<html>
-	<meta charset="utf-8">
-	<title>' . '</title>
-	<style>
-		body,td,th {font-family:"思源黑体"; font-size:12px;}
-		table,h1,p{width:960px;margin:0px auto;}
-		table{border-collapse:collapse;border:1px solid #CCC;background:#efefef;}
-		table caption{text-align:left; background-color:#fff; line-height:2em; font-size:14px; font-weight:bold; }
-		table th{text-align:left; font-weight:bold;height:26px; line-height:26px; font-size:12px; border:1px solid #CCC;padding-left:5px;}
-		table td{height:20px; font-size:14px; border:1px solid #CCC;background-color:#fff;padding-left:5px;}
-		.c1{ width: 150px;}.c2{ width: 150px;}.c3{ width: 80px;}.c4{ width: 100px;}.c5{ width: 100px;}.c6{ width: 300px;}
-	</style>
-	<body>';
+    <meta charset="utf-8">
+    <title>' . '</title>
+    <style>
+        body,td,th {font-family:"思源黑体"; font-size:12px;}
+        table,h1,p{width:960px;margin:0px auto;}
+        table{border-collapse:collapse;border:1px solid #CCC;background:#efefef;}
+        table caption{text-align:left; background-color:#fff; line-height:2em; font-size:14px; font-weight:bold; }
+        table th{text-align:left; font-weight:bold;height:26px; line-height:26px; font-size:12px; border:1px solid #CCC;padding-left:5px;}
+        table td{height:20px; font-size:14px; border:1px solid #CCC;background-color:#fff;padding-left:5px;}
+        .c1{ width: 150px;}.c2{ width: 150px;}.c3{ width: 80px;}.c4{ width: 100px;}.c5{ width: 100px;}.c6{ width: 300px;}
+    </style>
+    <body>';
 echo $html;
 ?>
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
