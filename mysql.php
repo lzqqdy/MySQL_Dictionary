@@ -17,7 +17,7 @@ $password = 'root';                 //访问密码GET['pwd']
 $database['DB_HOST'] = '127.0.0.1'; //数据库地址
 $database['DB_NAME'] = 'fastadmin'; //数据库名称
 $database['DB_USER'] = 'root';      //用户名
-$database['DB_PWD']  = 'root';      //密码
+$database['DB_PWD'] = 'root';      //密码
 $char_set = 'UTF8';                 //数据库编码
 //isset($dbname) ? $dbname : $dbname = $database['DB_NAME'];
 $dbname = $dbname ?? $database['DB_NAME']; //php>7.0
@@ -200,7 +200,7 @@ echo $html;
                 type: 2,
                 maxmin: true,
                 shadeClose: true,
-                content: url + '?name=' + dbname + '&table=' + tabname //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+                content: url + '?name=' + dbname + '&table=' + tabname
             });
         })
     });
@@ -218,7 +218,7 @@ echo $html;
         })
     });
     $('body', document).on('keyup', function (e) {
-        console.log("按下esc");
+        //console.log("按下esc");
         layer.closeAll();
     });
 </script>
