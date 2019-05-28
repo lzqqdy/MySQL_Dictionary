@@ -22,40 +22,35 @@ $char_set = 'UTF8';                 //数据库编码
 //isset($dbname) ? $dbname : $dbname = $database['DB_NAME'];
 $dbname = $dbname ?? $database['DB_NAME']; //php>7.0
 $pwd = !empty($_GET['pwd']) ? $_GET['pwd'] : $_SESSION['pwd'];
-if ($password != $pwd)
-{
+if ($password != $pwd) {
     session_destroy();
     exit('无权访问');
 }
 $_SESSION['pwd'] = $pwd;
 //连接数据库
 date_default_timezone_set('Asia/Shanghai');
-$mysql_conn = @mysqli_connect("{$database['DB_HOST']}", "{$database['DB_USER']}", "{$database['DB_PWD']}") or die("Mysql connect is error.");
+$mysql_conn = @mysqli_connect("{$database['DB_HOST']}", "{$database['DB_USER']}",
+    "{$database['DB_PWD']}") or die("Mysql connect is error.");
 mysqli_select_db($mysql_conn, $dbname);
 $result = mysqli_query($mysql_conn, 'show tables');
 mysqli_query($mysql_conn, 'SET NAMES ' . $char_set);
 
-if (isset($_GET['table']))
-{
+if (isset($_GET['table'])) {
     $tables[]['TABLE_NAME'] = $_GET['table'];
-} else
-{
+} else {
     // 取得所有表名
-    while ($row = mysqli_fetch_array($result))
-    {
+    while ($row = mysqli_fetch_array($result)) {
         $tables[]['TABLE_NAME'] = $row[0];
     }
 }
 // 循环取得所有表的备注及表中列信息
-foreach ($tables as $k => $v)
-{
+foreach ($tables as $k => $v) {
     $sql = 'SELECT * FROM ';
     $sql .= 'INFORMATION_SCHEMA.TABLES ';
     $sql .= 'WHERE ';
     $sql .= "table_name = '{$v['TABLE_NAME']}' AND table_schema = '{$dbname}'";
     $table_result = mysqli_query($mysql_conn, $sql);
-    while ($t = mysqli_fetch_array($table_result))
-    {
+    while ($t = mysqli_fetch_array($table_result)) {
         $tables[$k]['TABLE_COMMENT'] = $t['TABLE_COMMENT'];
     }
     $sql = 'SELECT * FROM ';
@@ -66,8 +61,7 @@ foreach ($tables as $k => $v)
     {
         $fields = array();
         $field_result = mysqli_query($mysql_conn, $sql);
-        while ($t = mysqli_fetch_array($field_result))
-        {
+        while ($t = mysqli_fetch_array($field_result)) {
             $fields[] = $t;
         }
         $tables[$k]['COLUMN'] = $fields;
@@ -76,12 +70,10 @@ foreach ($tables as $k => $v)
             $sql = 'SELECT * FROM ';
             $sql .= "$dbname.{$v['TABLE_NAME']}";
             $result = mysqli_query($mysql_conn, $sql);
-            while ($t = mysqli_fetch_assoc($result))
-            {
+            while ($t = mysqli_fetch_assoc($result)) {
                 $data[] = $t;
             }
-            if (isset($data))
-            {
+            if (isset($data)) {
                 $tables[$k]['DATA'] = $data;
             }
         }
@@ -90,20 +82,17 @@ foreach ($tables as $k => $v)
 mysqli_close($mysql_conn);
 //print_r($data);
 $html = '';
-if (isset($_GET['table']) && !isset($_GET['data']))
-{
+if (isset($_GET['table']) && !isset($_GET['data'])) {
     $html .= '<h1 style="text-align:center;">表结构</h1>';
     $html .= '<p style="text-align:right;> <a href="javascript:void(0)" class="data" data-tabname="' . $v['TABLE_NAME'] . '" >[查看数据]</a></p>';
     $html .= '<p style="text-align:center;margin:20px auto;">生成时间：' . date('Y-m-d H:i:s') . '</p>';
     // 循环所有表
-    foreach ($tables as $k => $v)
-    {
+    foreach ($tables as $k => $v) {
         $html .= '<table border="1" cellspacing="0" cellpadding="0" align="center">';
         $html .= '<caption>' . $v['TABLE_NAME'] . $v['TABLE_COMMENT'] . '</caption>';
         $html .= '<tbody><tr><th>字段名</th><th>数据类型</th><th>默认值</th><th>允许非空</th><th>自动递增</th><th>备注</th></tr>';
         $html .= '';
-        foreach ($v['COLUMN'] AS $f)
-        {
+        foreach ($v['COLUMN'] AS $f) {
             $html .= '<td class="c1">' . $f['COLUMN_NAME'] . '</td>';
             $html .= '<td class="c2">' . $f['COLUMN_TYPE'] . '</td>';
             $html .= '<td class="c3">' . $f['COLUMN_DEFAULT'] . '</td>';
@@ -116,56 +105,49 @@ if (isset($_GET['table']) && !isset($_GET['data']))
         $html .= '<p style="text-align:left;margin:20px auto;">总共：' . count($v['COLUMN']) . '个字段</p>';
         $html .= '</body></html>';
     }
-} else if (isset($_GET['data']) && $_GET['data'] == 1)
-{
-    $html .= '<h1 style="text-align:center;">表数据</h1>';
-    $html .= '<p style="text-align:right;><a href="javascript:void(0)" class="abiao" data-tabname="' . $v['TABLE_NAME'] . '" >[查看结构]</a></p>';
-    //循环数据
-    foreach ($tables as $k => $v)
-    {
-        $html .= '<table border="1" cellspacing="0" cellpadding="0" align="center">';
-        $html .= '<caption>' . $v['TABLE_NAME'] . $v['TABLE_COMMENT'] . '</caption>';
-        $html .= '<tbody><tr>';
-        foreach ($v['COLUMN'] AS $f)
-        {
-            $html .= '<th>' . $f['COLUMN_NAME'] . '</th>';
-        }
-        $html .= '</tr>';
-        $html .= '';
-        if (isset($v['DATA']))
-        {
-            foreach ($v['DATA'] AS $kk => $vv)
-            {
-                foreach ($vv as $kkk => $vvv)
-                {
-                    $html .= '<td class="cd">' . $vv[$kkk] . '</td>';
-                }
-                $html .= '</tr>';
+} else {
+    if (isset($_GET['data']) && $_GET['data'] == 1) {
+        $html .= '<h1 style="text-align:center;">表数据</h1>';
+        $html .= '<p style="text-align:right;><a href="javascript:void(0)" class="abiao" data-tabname="' . $v['TABLE_NAME'] . '" >[查看结构]</a></p>';
+        //循环数据
+        foreach ($tables as $k => $v) {
+            $html .= '<table border="1" cellspacing="0" cellpadding="0" align="center">';
+            $html .= '<caption>' . $v['TABLE_NAME'] . $v['TABLE_COMMENT'] . '</caption>';
+            $html .= '<tbody><tr>';
+            foreach ($v['COLUMN'] AS $f) {
+                $html .= '<th>' . $f['COLUMN_NAME'] . '</th>';
             }
-            $count = count($v['DATA']);
-        } else
-        {
-            $count = 0;
+            $html .= '</tr>';
+            $html .= '';
+            if (isset($v['DATA'])) {
+                foreach ($v['DATA'] AS $kk => $vv) {
+                    foreach ($vv as $kkk => $vvv) {
+                        $html .= '<td class="cd">' . $vv[$kkk] . '</td>';
+                    }
+                    $html .= '</tr>';
+                }
+                $count = count($v['DATA']);
+            } else {
+                $count = 0;
+            }
+            $html .= '</tbody></table></p>';
+            $html .= '<p style="text-align:left;margin:20px auto;">总共：' . $count . '条数据</p>';
+            $html .= '</body></html>';
         }
-        $html .= '</tbody></table></p>';
-        $html .= '<p style="text-align:left;margin:20px auto;">总共：' . $count . '条数据</p>';
-        $html .= '</body></html>';
-    }
-} else
-{
-    $html .= '<h1 style="text-align:center;">数据字典</h1>';
-    $html .= '<p style="text-align:center;margin:20px auto;">生成时间：' . date('Y-m-d H:i:s') . '</p>';
-    foreach ($tables as $k => $v)
-    {
-        $html .= '<table border="1" cellspacing="0" cellpadding="0" align="center">';
-        $html .= '<caption>表名：' . $v['TABLE_NAME'] . ' ------- ' . $v['TABLE_COMMENT'] .
-            '<a href="javascript:void(0)" class="abiao" data-tabname="' . $v['TABLE_NAME'] . '" >[查看结构]</a>
+    } else {
+        $html .= '<h1 style="text-align:center;">数据字典</h1>';
+        $html .= '<p style="text-align:center;margin:20px auto;">生成时间：' . date('Y-m-d H:i:s') . '</p>';
+        foreach ($tables as $k => $v) {
+            $html .= '<table border="1" cellspacing="0" cellpadding="0" align="center">';
+            $html .= '<caption>表名：' . $v['TABLE_NAME'] . ' ------- ' . $v['TABLE_COMMENT'] .
+                '<a href="javascript:void(0)" class="abiao" data-tabname="' . $v['TABLE_NAME'] . '" >[查看结构]</a>
             <a href="javascript:void(0)" class="data" data-tabname="' . $v['TABLE_NAME'] . '" >[查看数据]</a>
             </caption>';
-        $html .= '</tbody></table></p>';
+            $html .= '</tbody></table></p>';
+        }
+        $html .= '<p style="text-align:left;margin:20px auto;">总共：' . count($tables) . '个数据表</p>';
+        $html .= '</body></html>';
     }
-    $html .= '<p style="text-align:left;margin:20px auto;">总共：' . count($tables) . '个数据表</p>';
-    $html .= '</body></html>';
 }
 // 输出
 echo '<html>
