@@ -9,3 +9,7 @@ php编写的MySQL数据字典
 name：数据库名称
 pwd：访问密码
 ```
+## **界面截图**
+![首页](https://cdn.lzqqdy.cn/QQ%E6%88%AA%E5%9B%BE20190715222640.jpg "首页")
+![表结构](https://cdn.lzqqdy.cn/QQ%E6%88%AA%E5%9B%BE20190715222653.jpg "表结构")
+![表数据](https://cdn.lzqqdy.cn/QQ%E6%88%AA%E5%9B%BE20190715222709.jpg "表数据")
