@@ -84,7 +84,7 @@ foreach ($tables as $k => $v) {
     }
 }
 mysqli_close($mysql_conn);
-
+//var_dump($tables);
 $html = '';
 if (isset($_GET['table']) && !isset($_GET['data'])) {
     $html .= '<h1 style="text-align:center;">表结构</h1>';
@@ -94,7 +94,7 @@ if (isset($_GET['table']) && !isset($_GET['data'])) {
     foreach ($tables as $k => $v) {
         $html .= '<table border="1" cellspacing="0" cellpadding="0" align="center">';
         $html .= '<caption>' . $v['TABLE_COMMENT'] . '</br>' . $v['TABLE_NAME'] . '</caption>';
-        $html .= '<tbody><tr><th>字段名</th><th>数据类型</th><th>默认值</th><th>允许非空</th><th>自动递增</th><th>备注</th></tr>';
+        $html .= '<tbody><tr><th>字段名</th><th>数据类型</th><th>默认值</th><th>非空</th><th>递增</th><th>编码</th><th>备注</th></tr>';
         $html .= '';
         foreach ($v['COLUMN'] AS $f) {
             $html .= '<td class="c1">' . $f['COLUMN_NAME'] . '</td>';
@@ -102,7 +102,8 @@ if (isset($_GET['table']) && !isset($_GET['data'])) {
             $html .= '<td class="c3">' . $f['COLUMN_DEFAULT'] . '</td>';
             $html .= '<td class="c4">' . $f['IS_NULLABLE'] . '</td>';
             $html .= '<td class="c5">' . ($f['EXTRA'] == 'auto_increment' ? '是' : ' ') . '</td>';
-            $html .= '<td class="c6">' . $f['COLUMN_COMMENT'] . '</td>';
+            $html .= '<td class="c6">' . $f['COLLATION_NAME'] . '</td>';
+            $html .= '<td class="c7">' . $f['COLUMN_COMMENT'] . '</td>';
             $html .= '</tr>';
         }
         $html .= '</tbody></table></p>';
@@ -119,7 +120,7 @@ if (isset($_GET['table']) && !isset($_GET['data'])) {
             $html .= '<caption>' . $v['TABLE_COMMENT'] . '</br>' . $v['TABLE_NAME'] . '</caption>';
             $html .= '<tbody><tr>';
             foreach ($v['COLUMN'] AS $f) {
-                $html .= '<th>' . $f['COLUMN_NAME'] . '</br>' . '(' . $f['COLUMN_COMMENT'] . ')' . '</th>';
+                $html .= '<th>' . $f['COLUMN_NAME'] . '</br>' . $f['COLUMN_COMMENT'] . '</th>';
             }
             $html .= '</tr>';
             $html .= '';
@@ -164,7 +165,7 @@ echo '<html>
         table caption{text-align:left; background-color:#fff; line-height:2em; font-size:16px; font-weight:bold; }
         table th{text-align:left; font-weight:bold;height:26px; line-height:26px; font-size:16px; border:1px solid #CCC;padding-left:5px;}
         table td{height:30px; font-size:14px; border:1px solid #CCC;background-color:#fff;padding-left:5px;}
-        .c1{ width: 150px;}.c2{ width: 150px;}.c3{ width: 80px;}.c4{ width: 100px;}.c5{ width: 100px;}.c6{ width: 300px;}
+        .c1{ width: 150px;}.c2{ width: 150px;}.c3{ width: 80px;}.c4{ width: 40px;}.c5{ width: 40px;}.c6{ width: 150px;.c7{ width: 300px;}
     </style>
     <body>';
 echo $html;
