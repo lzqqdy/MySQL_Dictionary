@@ -47,6 +47,9 @@ if (isset($_GET['table'])) {
         $tables[]['TABLE_NAME'] = $row[0];
     }
 }
+if (empty($tables)) {
+    die("Table is empty.");
+}
 // 循环取得所有表的备注及表中列信息
 foreach ($tables as $k => $v) {
     $sql = 'SELECT * FROM ';
