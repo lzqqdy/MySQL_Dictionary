@@ -205,6 +205,9 @@ echo $html;
         })
     });
     $('body', document).on('keyup', function (e) {
-        layer.closeAll();
+        var key = e.which || e.keyCode;
+        if (key === 27) {
+            layer.closeAll();
+        }
     });
 </script>
