@@ -163,8 +163,8 @@ echo '<html>
         table,h1,p{width:960px;margin:0px auto;}
         table{border-collapse:collapse;border:1px solid #CCC;background:#efefef;}
         table caption{text-align:left; background-color:#fff; line-height:2em; font-size:16px; font-weight:bold; }
-        table th{text-align:left; font-weight:bold;height:26px; line-height:26px; font-size:16px; border:1px solid #CCC;padding-left:5px;}
-        table td{height:30px; font-size:14px; border:1px solid #CCC;background-color:#fff;padding-left:5px;}
+        table th{text-align:center; font-weight:bold;height:26px; line-height:26px; font-size:16px; border:1px solid #CCC;padding-left:5px;}
+        table td{text-align: center;height:30px; font-size:14px; border:1px solid #CCC;background-color:#fff;padding-left:5px;}
         .c1{ width: 150px;}.c2{ width: 150px;}.c3{ width: 80px;}.c4{ width: 40px;}.c5{ width: 40px;}.c6{ width: 150px;.c7{ width: 300px;}
     </style>
     <body>';
