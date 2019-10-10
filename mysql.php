@@ -9,8 +9,7 @@
 session_start();
 header("Content-type:text/html;charset=utf-8");
 
-//$dbname = isset($_GET['name']) ? $dbname = $_GET['name'] : $dbname = null;
-$dbname = $_GET['name'] ?? null; //php>7.0,否则使用上面的
+$db_name = $_GET['name'] ?? null;
 // 配置数据库
 $database = [];
 $password = 'root';                 //访问密码GET['pwd']
@@ -19,9 +18,8 @@ $database['DB_NAME'] = 'base';     //数据库名称
 $database['DB_USER'] = 'root';      //用户名
 $database['DB_PWD'] = 'root';       //密码
 $char_set = 'UTF8';                 //数据库编码
-//isset($dbname) ? $dbname : $dbname = $database['DB_NAME'];
-$dbname = $dbname ?? $database['DB_NAME']; //php>7.0
-$pwd = !empty($_GET['pwd']) ? $_GET['pwd'] : $_SESSION['pwd'];
+$db_name = $db_name ?? $database['DB_NAME'];
+$pwd = array_key_exists('pwd', $_GET) ? $_GET['pwd'] : $_SESSION['pwd'] ?? [];
 if ($password != $pwd) {
     session_destroy();
     exit('No right to visit');
@@ -31,7 +29,7 @@ $_SESSION['pwd'] = $pwd;
 date_default_timezone_set('Asia/Shanghai');
 $mysql_conn = @mysqli_connect("{$database['DB_HOST']}", "{$database['DB_USER']}",
     "{$database['DB_PWD']}") or die("Mysql connect is error.");
-mysqli_select_db($mysql_conn, $dbname);
+mysqli_select_db($mysql_conn, $db_name);
 $result = mysqli_query($mysql_conn, 'show tables');
 mysqli_query($mysql_conn, 'SET NAMES ' . $char_set);
 
@@ -55,7 +53,7 @@ foreach ($tables as $k => $v) {
     $sql = 'SELECT * FROM ';
     $sql .= 'INFORMATION_SCHEMA.TABLES ';
     $sql .= 'WHERE ';
-    $sql .= "table_name = '{$v['TABLE_NAME']}' AND table_schema = '{$dbname}'";
+    $sql .= "table_name = '{$v['TABLE_NAME']}' AND table_schema = '{$db_name}'";
     $table_result = mysqli_query($mysql_conn, $sql);
     while ($t = mysqli_fetch_array($table_result)) {
         $tables[$k]['TABLE_COMMENT'] = $t['TABLE_COMMENT'];
@@ -63,7 +61,7 @@ foreach ($tables as $k => $v) {
     $sql = 'SELECT * FROM ';
     $sql .= 'INFORMATION_SCHEMA.COLUMNS ';
     $sql .= 'WHERE ';
-    $sql .= "table_name = '{$v['TABLE_NAME']}' AND table_schema = '{$dbname}'";
+    $sql .= "table_name = '{$v['TABLE_NAME']}' AND table_schema = '{$db_name}'";
     if (isset($_GET['table'])) //表名参数存在才查询出结构
     {
         $fields = array();
@@ -75,7 +73,7 @@ foreach ($tables as $k => $v) {
         if (isset($_GET['data']) && $_GET['data'] == 1) //查询数据
         {
             $sql = 'SELECT * FROM ';
-            $sql .= "$dbname.{$v['TABLE_NAME']}";
+            $sql .= "$db_name.{$v['TABLE_NAME']}";
             $result = mysqli_query($mysql_conn, $sql);
             while ($t = mysqli_fetch_assoc($result)) {
                 $data[] = $t;
@@ -179,7 +177,7 @@ echo $html;
     var geturl = window.location.href;
     var arr = geturl.split('?');
     var url = arr[0];
-    var dbname = '<?php echo $dbname;?>';
+    var dbname = '<?php echo $db_name;?>';
     $(document).ready(function () {
         $(".abiao").on('click', function (e) {
             var tabname = $(this).data("tabname");
