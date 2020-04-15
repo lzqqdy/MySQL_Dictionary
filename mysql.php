@@ -172,7 +172,7 @@ echo '<html>
 echo $html;
 ?>
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="http://apps.bdimg.com/libs/layer/2.1/layer.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
 <script type="text/javascript">
     var geturl = window.location.href;
     var arr = geturl.split('?');
