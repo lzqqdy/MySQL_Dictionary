@@ -73,7 +73,7 @@ foreach ($tables as $k => $v) {
         if (isset($_GET['data']) && $_GET['data'] == 1) //查询数据
         {
             $sql = 'SELECT * FROM ';
-            $sql .= "$db_name.{$v['TABLE_NAME']}";
+            $sql .= "$db_name.{$v['TABLE_NAME']} limit 999";
             $result = mysqli_query($mysql_conn, $sql);
             while ($t = mysqli_fetch_assoc($result)) {
                 $data[] = $t;
